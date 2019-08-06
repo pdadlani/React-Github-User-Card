@@ -34,11 +34,19 @@
 
 .page-header {
   color: white;
-  background-color: rgb(20, 213, 216);
+  background-color: rgb(46, 8, 216);
   /* border-radius: 5px; */
   /* max-width: 90vw; */
   margin: 0 auto;
+  margin-bottom: 20px;
   font-family: Georgia;
+  padding: 10px;
+}
+
+.followers-list-header {
+  font-family: Georgia;
+  color: white;
+  background-color: rgb(20, 213, 216);
   padding: 10px;
 }
 
