@@ -11,23 +11,37 @@ class App extends React.Component {
 
     this.state = {
       user: 'pdadlani',
+      // added for search
+      userQuery: '',
       userData: [],
       followersData: []
     }
   }
 
   componentDidMount() {
+    console.log('componentDidMount called');
     this.fetchUser();
     this.fetchFollowers();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('componentDidUpdate got called');
+    if (prevState.user !== this.state.user) {
+      this.fetchUser(this.state.user)
+      this.fetchFollowers();
+      console.log('componentDidUpdate inside')
+    }
   }
 
   fetchUser = () => {
     fetch(`https://api.github.com/users/${this.state.user}`)
       .then(response => {
-        console.log('response', response)
+        console.log('response in fetchUser', response)
         return response.json();
       })
-      .then(fetchedUser => this.setState({ userData: fetchedUser }))
+      .then(fetchedUser => {
+        console.log('response in fetchedUser')
+        return this.setState({ userData: fetchedUser })})
       // .then(fetchedUser => console.log('fetchedUser', fetchedUser))
       .catch(err => {
         console.log('There is an error in App.js fetchUser', err);
@@ -40,11 +54,28 @@ class App extends React.Component {
         console.log('fetchFollowers response', response)
         return response.json();
       })
-      .then(fetchedFollowers => this.setState({ followersData: fetchedFollowers }))
+      .then(fetchedFollowers => {
+        console.log('fetchedFollowers');
+        return this.setState({ followersData: fetchedFollowers })})
       // .then(fetchedFollowers => console.log('fetchedFollowers', fetchedFollowers))
       .catch(err => {
         console.log('There is an error in App.js fetchFollowers', err);
       })
+  }
+
+  handleChange = event => {
+    console.log('handleChange called')
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+  };
+
+  submitUserQuery = event => {
+    console.log('submitUserQUery called');
+    event.preventDefault();
+    this.setState({ user: this.state.userQuery});
+    
+    this.state.userQuery = '';
   }
 
   render () {
@@ -54,6 +85,17 @@ class App extends React.Component {
       <div>
         {/* <a class="fab fa-github-square fa-lg "></a> */}
         <h1 className='page-header'>GitHub User</h1>
+        <form onSubmit={this.submitUserQuery}>
+          <input 
+            type='text'
+            // changed for search
+            value={this.state.userQuery}
+            //changed for search
+            name='userQuery'
+            onChange={this.handleChange}
+          />
+          <button className='submit-search'>Submit</button>
+        </form>
         <UserCard userData={this.state.userData} />
         <FollowersList userData={this.state.userData} followersData={this.state.followersData} />
       </div>
